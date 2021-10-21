@@ -1,21 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { LogBox } from "react-native";
+import AppNav from "./src/components/nav/App";
+import * as ErrorRecovery from "expo-error-recovery";
+import { Provider } from "mobx-react";
+import stores from "./src/stores";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+LogBox.ignoreLogs([
+  "VirtualizedLists should never be nested inside plain ScrollViews",
+]);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const defaultErrorHandler = ErrorUtils.getGlobalHandler();
+
+const globalErrorHandler = (err, isFatal) => {
+  console.log("globalErrorHandler called!");
+  ErrorRecovery.setRecoveryProps({ info: err });
+  defaultErrorHandler(err, isFatal);
+};
+
+ErrorUtils.setGlobalHandler(globalErrorHandler);
+
+const App = () => {
+  return <AppNav />;
+};
+
+export default App;
