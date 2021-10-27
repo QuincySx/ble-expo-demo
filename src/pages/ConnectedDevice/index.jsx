@@ -10,7 +10,8 @@ import {
 } from "react-native";
 import { useStores } from "../../hooks/use_store";
 import { useNavigation } from "@react-navigation/core";
-
+import OneKeyConnect from "../../trezor-connect";
+import { Handler } from "../../util/BleHandler";
 const ConnectedDevice = () => {
   const { bleDeviceStore } = useStores();
   const navigation = useNavigation();
@@ -45,7 +46,17 @@ const ConnectedDevice = () => {
           <Button
             title="操作钱包"
             onPress={() => {
-              navigation.navigate("hardwareOption", { device: device });
+              // navigation.navigate("hardwareOption", { device: device });
+              OneKeyConnect.init({
+                        env: "react-native",
+                        ble: Handler,
+                        debug: true,
+                    }).then(() => {});
+              OneKeyConnect.getFeatures().then(features => {
+                  console.log("###############");
+                  console.log(features);
+                  console.log("#############");
+                  }).catch(err => console.log(("error occur.....")));
             }}
           />
         </View>

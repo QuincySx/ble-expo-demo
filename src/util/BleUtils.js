@@ -3,6 +3,9 @@ import { BleManager, ScanCallbackType, ScanMode } from "react-native-ble-plx";
 import { Buffer } from "buffer";
 import * as Location from "expo-location";
 
+SERVICE_ID = "00000001-0000-1000-8000-00805f9b34fb";
+WRITE_NO_RESPONSE_ID = "00000002-0000-1000-8000-00805f9b34fb";
+NOTIFICATION_ID = "00000003-0000-1000-8000-00805f9b34fb";
 class BleUtils {
   constructor() {
     this.isConnecting = false; //蓝牙是否连接
@@ -177,6 +180,10 @@ class BleUtils {
       console.log("fetchServicesAndCharacteristicsForDevice", services);
       this.isConnecting = false;
       this.getUUID(services);
+      this.startNotification().then(ch => {
+        console.log("-----------+++++++++");
+        console.log(ch);
+      });
     } catch (err) {
       this.isConnecting = false;
       console.log("connect fail: ", err);
@@ -264,7 +271,7 @@ class BleUtils {
   /**
    * 写数据 withoutResponse
    * */
-  writeWithoutResponse(value, index) {
+  writeWithoutResponse(value) {
     let formatValue;
     if (value === "0D0A") {
       //直接发送小票打印机的结束标志
@@ -278,8 +285,8 @@ class BleUtils {
       this.manager
         .writeCharacteristicWithoutResponseForDevice(
           this.peripheralId,
-          this.writeWithoutResponseServiceUUID[index],
-          this.writeWithoutResponseCharacteristicUUID[index],
+          SERVICE_ID,
+          WRITE_NO_RESPONSE_ID,
           formatValue,
           transactionId
         )
@@ -295,6 +302,28 @@ class BleUtils {
           }
         );
     });
+  }
+  
+  startNotification() {
+    let transactionId = "notification";
+    return new Promise((resolve, reject) => {
+      this.manager.monitorCharacteristicForDevice(
+        this.peripheralId,
+        SERVICE_ID,
+        NOTIFICATION_ID ,
+        (error, characteristic) => {
+          if (error !== null) {
+            console.log("notication fail .........");
+            reject(error)
+          };
+          if (characteristic !== null) {
+            console.log("receive.......");
+            console.log(character);
+            resolve(characteristic);
+          }
+        },
+        transactionId,
+    )});
   }
 
   /**
