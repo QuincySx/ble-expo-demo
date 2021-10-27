@@ -4,11 +4,13 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "proto": "pbjs -t static-module -w commonjs -o src/protob/proto.js src/protob/*.proto"
   },
   "dependencies": {
     "@config-plugins/react-native-ble-plx": "^0.0.1",
     "@expo/vector-icons": "^12.0.0",
+    "@onekeyhq/connect": "file:lib/connect",
     "@react-navigation/bottom-tabs": "^6.0.8",
     "@react-navigation/drawer": "^6.1.8",
     "@react-navigation/elements": "^1.2.0",
@@ -38,8 +40,11 @@
     "tailwind-rn": "^3.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0",
+    "@babel/core": "^7.15.8",
     "@types/react-native": "~0.63.2",
+    "fs-extra": "^10.0.0",
+    "proto2js": "^1.0.9",
+    "protobufjs-old-fixed-webpack": "^3.8.5",
     "typescript": "~4.0.0"
   },
   "private": true,

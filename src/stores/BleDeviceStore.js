@@ -99,7 +99,7 @@ class BleDeviceStore {
       bleUtils.stopScan();
       runInAction(() => {
         this.isScaning = false;
-        console.log("停止蓝牙搜索");
+        console.log("停止蓝牙搜索"); 
       });
     }
   }

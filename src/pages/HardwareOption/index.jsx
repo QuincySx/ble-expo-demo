@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import bleUtils from "../../util/BleUtils";
-// import { OneKeyConnect } from "../../trezor-connect";
+import { OneKeyConnect } from "../../trezor-connect";
 
 const HardwareOption = () => {
   const isFocused = useIsFocused();
@@ -92,8 +92,71 @@ const HardwareOption = () => {
       setNofityCharacteristicUUID(nofityCharacteristicUUID);
     }
 
+    async function initHardware() {
+      OneKeyConnect.init({
+        connectSrc: "https://localhost:8088/",
+        lazyLoad: true, // 开启 lazyLoad 会直到调用 OneKeyConnect 方法后才会初始化 iframe.
+        manifest: {
+          email: "hi@onekey.so",
+          appUrl: "https://onekey.so",
+        },
+        env: "react-native"
+      });
+    }
+
     fetchBleDeviceData();
+    initHardware();
   }, []);
+
+  const renderUuidItemsViews = () => {
+    return (
+      <View>
+        {renderUuidItemView("readServiceUUID", readServiceUUID)}
+        {renderUuidItemView("readCharacteristicUUID", readCharacteristicUUID)}
+        {renderUuidItemView(
+          "writeWithResponseServiceUUID",
+          writeWithResponseServiceUUID
+        )}
+        {renderUuidItemView(
+          "writeWithResponseCharacteristicUUID",
+          writeWithResponseCharacteristicUUID
+        )}
+        {renderUuidItemView(
+          "writeWithoutResponseServiceUUID",
+          writeWithoutResponseServiceUUID
+        )}
+        {renderUuidItemView(
+          "writeWithoutResponseCharacteristicUUID",
+          writeWithoutResponseCharacteristicUUID
+        )}
+        {renderUuidItemView("nofityServiceUUID", nofityServiceUUID)}
+        {renderUuidItemView(
+          "nofityCharacteristicUUID",
+          nofityCharacteristicUUID
+        )}
+      </View>
+    );
+  };
+
+  const renderUuidItemView = (title, uuids) => {
+    return (
+      <View>
+        <Text style={styles.deviceUUidTitle}>{title}:</Text>
+        {uuids.map((uuid) => {
+          return <Text key={uuids}>{uuid}</Text>;
+        })}
+      </View>
+    );
+  };
+
+  const getHardware = () => {
+    try {
+      let feature = OneKeyConnect.getFeatures();
+      setHardwareInfo(feature);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -107,7 +170,9 @@ const HardwareOption = () => {
           <Button
             title={"获取硬件信息"}
             style={{ color: "black", marginTop: 5 }}
-            onPress={() => {}}
+            onPress={() => {
+              getHardware();
+            }}
           />
           <View style={styles.content}>
             <Text>info:</Text>
@@ -127,50 +192,11 @@ const HardwareOption = () => {
         </View>
 
         <View style={styles.deviceContent}>
-          <Text style={styles.deviceUUidTitle}>硬件信息:</Text>
+          <Text style={styles.deviceUUidTitle}>读取信息:</Text>
           <Text>{device.id}</Text>
           <Text>{device.name}</Text>
 
-          <Text style={styles.deviceUUidTitle}>readServiceUUID:</Text>
-          {readServiceUUID.map((uuid) => {
-            return <Text>{uuid}</Text>;
-          })}
-          <Text style={styles.deviceUUidTitle}>readCharacteristicUUID:</Text>
-          {readCharacteristicUUID.map((uuid) => {
-            return <Text>{uuid}</Text>;
-          })}
-          <Text style={styles.deviceUUidTitle}>
-            writeWithResponseServiceUUID:
-          </Text>
-          {writeWithResponseServiceUUID.map((uuid) => {
-            return <Text>{uuid}</Text>;
-          })}
-          <Text style={styles.deviceUUidTitle}>
-            writeWithResponseCharacteristicUUID:
-          </Text>
-          {writeWithResponseCharacteristicUUID.map((uuid) => {
-            return <Text>{uuid}</Text>;
-          })}
-          <Text style={styles.deviceUUidTitle}>
-            writeWithoutResponseServiceUUID:
-          </Text>
-          {writeWithoutResponseServiceUUID.map((uuid) => {
-            return <Text>{uuid}</Text>;
-          })}
-          <Text style={styles.deviceUUidTitle}>
-            writeWithoutResponseCharacteristicUUID:
-          </Text>
-          {writeWithoutResponseCharacteristicUUID.map((uuid) => {
-            return <Text>{uuid}</Text>;
-          })}
-          <Text style={styles.deviceUUidTitle}>nofityServiceUUID:</Text>
-          {nofityServiceUUID.map((uuid) => {
-            return <Text>{uuid}</Text>;
-          })}
-          <Text style={styles.deviceUUidTitle}>nofityCharacteristicUUID:</Text>
-          {nofityCharacteristicUUID.map((uuid) => {
-            return <Text>{uuid}</Text>;
-          })}
+          {renderUuidItemsViews()}
         </View>
       </ScrollView>
     </>
