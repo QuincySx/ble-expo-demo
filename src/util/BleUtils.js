@@ -6,6 +6,10 @@ import * as Location from "expo-location";
 SERVICE_ID = "00000001-0000-1000-8000-00805f9b34fb";
 WRITE_NO_RESPONSE_ID = "00000002-0000-1000-8000-00805f9b34fb";
 NOTIFICATION_ID = "00000003-0000-1000-8000-00805f9b34fb";
+
+LENGTH_FILED_START_OFFSET = 10;
+LENGTH_FILED_END_OFFSET = 18;
+HEAD_LENGTH = 9;
 class BleUtils {
   constructor() {
     this.isConnecting = false; //蓝牙是否连接
@@ -119,8 +123,6 @@ class BleUtils {
   async findConnectedDevices() {
     return this.manager.connectedDevices([
       "00000001-0000-1000-8000-00805f9b34fb",
-      "00000002-0000-1000-8000-00805f9b34fb",
-      "00000003-0000-1000-8000-00805f9b34fb",
     ]);
   }
 
@@ -180,10 +182,7 @@ class BleUtils {
       console.log("fetchServicesAndCharacteristicsForDevice", services);
       this.isConnecting = false;
       this.getUUID(services);
-      this.startNotification().then(ch => {
-        console.log("-----------+++++++++");
-        console.log(ch);
-      });
+      this.startNotification();
     } catch (err) {
       this.isConnecting = false;
       console.log("connect fail: ", err);
@@ -272,14 +271,16 @@ class BleUtils {
    * 写数据 withoutResponse
    * */
   writeWithoutResponse(value) {
-    let formatValue;
-    if (value === "0D0A") {
-      //直接发送小票打印机的结束标志
-      formatValue = value;
-    } else {
-      //发送内容，转换成base64编码
-      formatValue = new Buffer(value, "base64").toString("ascii");
-    }
+    let formatValue = value;
+    // if (value === "0D0A") {
+    //   //直接发送小票打印机的结束标志
+    //   formatValue = value;
+    // } else {
+    //   //发送内容，转换成base64编码
+    //   // formatValue = new Buffer(value, "base64");
+    //   formatValue = value;
+
+    // }
     let transactionId = "writeWithoutResponse";
     return new Promise((resolve, reject) => {
       this.manager
@@ -292,7 +293,7 @@ class BleUtils {
         )
         .then(
           (characteristic) => {
-            console.log("writeWithoutResponse success", value);
+            console.log("writeWithoutResponse success", formatValue);
             resolve(characteristic);
           },
           (error) => {
@@ -306,7 +307,6 @@ class BleUtils {
   
   startNotification() {
     let transactionId = "notification";
-    return new Promise((resolve, reject) => {
       this.manager.monitorCharacteristicForDevice(
         this.peripheralId,
         SERVICE_ID,
@@ -314,17 +314,17 @@ class BleUtils {
         (error, characteristic) => {
           if (error !== null) {
             console.log("notication fail .........");
-            reject(error)
           };
           if (characteristic !== null) {
-            console.log("receive.......");
-            console.log(character);
-            resolve(characteristic);
+            //TODO: 从蓝牙接收到的数据可能会超过MTU，这时蓝牙外设会返回两次或两次以上的通知，我们必须接收到完整的数据才能返回给调用方。
+            // 关于如何判断是否收到完整的数据包：1. 首包的格式为：9字节header(?## + 2字节的类型 + 4字节的总负载长度) + payload 2. 从首包数据中获取总负载长度(总负载长度不包括header的长度)
+            // 另外我们需要对接收到的数据做下处理：删除首包开头的 "?"，返回剩余数据。
+            
+            console.log("receive data from characteristic.......", Buffer.from(characteristic.value, "base64").toString('hex'));
           }
         },
         transactionId,
-    )});
-  }
+    )};
 
   /**
    * 卸载蓝牙管理器
