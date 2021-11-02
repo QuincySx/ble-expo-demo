@@ -1,4 +1,4 @@
-import bleUtils from './BleUtils';
+// import bleUtils from './BleUtils';
 import { Buffer } from "buffer";
 export class BleHandler {
     constructor() {  
@@ -24,10 +24,11 @@ export class BleHandler {
         // console.log("1111111111111");
         // console.log("write ........." + Buffer.from(newArray).toString('base64'));
         // newArray = Buffer.from(newArray).toString('base64');
-        data = "3f" + data;
-        value = Buffer.from(data, 'hex').toString('base64');
-        console.log("==="+ value + data);
-        bleUtils.writeWithoutResponse(value);
+        
+        // data = "3f" + data;
+        // value = Buffer.from(data, 'hex').toString('base64');
+        // console.log("==="+ value + data);
+        // bleUtils.writeWithoutResponse(value);
         return Promise.resolve("");
     }
     read(path, debugLink) {

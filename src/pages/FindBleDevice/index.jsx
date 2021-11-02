@@ -1,5 +1,5 @@
 import { Observer } from "mobx-react-lite";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Button,
   FlatList,
@@ -13,6 +13,10 @@ import { useStores } from "../../hooks/use_store";
 
 const FindBleDevice = () => {
   const { bleDeviceStore } = useStores();
+
+  useEffect(()=>{
+    console.log('FindBleDevice useEffect')
+  })
 
   const renderHeader = () => {
     return (
@@ -41,14 +45,13 @@ const FindBleDevice = () => {
 
   const renderItem = (item) => {
     const device = item.item;
-
     return (
       <TouchableOpacity
         activeOpacity={0.7}
-        disabled={bleDeviceStore.isConnecting ? true : false}
-        onPress={() => {
-          bleDeviceStore.connect(device);
-        }}
+        // disabled={bleDeviceStore.isConnecting ? true : false}
+        // onPress={() => {
+        //   bleDeviceStore.connect(device);
+        // }}
         style={styles.item}
       >
         <View style={{ flexDirection: "row" }}>

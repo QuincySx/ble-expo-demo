@@ -12,7 +12,7 @@ LogBox.ignoreLogs([
 const defaultErrorHandler = ErrorUtils.getGlobalHandler();
 
 const globalErrorHandler = (err, isFatal) => {
-  console.log("globalErrorHandler called!");
+  console.log("globalErrorHandler called!", err);
   ErrorRecovery.setRecoveryProps({ info: err });
   defaultErrorHandler(err, isFatal);
 };

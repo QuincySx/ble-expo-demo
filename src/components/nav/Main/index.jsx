@@ -1,14 +1,13 @@
 import React from "react";
-import { ScrollView, Text } from "react-native";
+import { Text, View } from "react-native";
 import {
   createBottomTabNavigator,
   useBottomTabBarHeight,
 } from "@react-navigation/bottom-tabs";
 import { useIsFocused } from "@react-navigation/core";
 import { Ionicons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
-import FindBleDevice from "../../../pages/FindBleDevice";
-import ConnectedDevice from "../../../pages/ConnectedDevice";
+// import FindBleDevice from "../../../pages/FindBleDevice";
+// import ConnectedDevice from "../../../pages/ConnectedDevice";
 
 const getTabBarIcon =
   (iconName) =>
@@ -23,14 +22,14 @@ const TabSimpleScreen = () => {
 
   return (
     <>
-      {isFocused && <StatusBar barStyle="light-content" />}
-      <ScrollView
+      <View
         contentContainerStyle={{
           paddingBottom: tabBarHeight,
         }}
       >
-        <ConnectedDevice />
-      </ScrollView>
+        <Text>sdfsdf</Text>
+        {/* <ConnectedDevice /> */}
+      </View>
     </>
   );
 };
@@ -41,14 +40,14 @@ const TabBleScreen = () => {
 
   return (
     <>
-      {isFocused && <StatusBar barStyle="light-content" />}
-      <ScrollView
+      <View
         contentContainerStyle={{
           paddingBottom: tabBarHeight,
         }}
       >
-        <FindBleDevice />
-      </ScrollView>
+        <Text>sdfsdf</Text>
+        {/* <FindBleDevice /> */}
+      </View>
     </>
   );
 };

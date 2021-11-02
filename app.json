@@ -1,4 +1,5 @@
 {
+  "displayName": "MyApp",
   "expo": {
     "name": "onekey-expo-demo",
     "slug": "onekey-expo-demo",
@@ -13,9 +14,6 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "plugins": [
-      "@config-plugins/react-native-ble-plx"
-    ],
     "assetBundlePatterns": [
       "**/*"
     ],

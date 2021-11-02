@@ -2,23 +2,25 @@ import React, { useRef } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import Main from "../Main";
-import HardwareOption from "../../../pages/HardwareOption";
+// import HardwareOption from "../../../pages/HardwareOption";
+import LaunchView from "../../../pages/LaunchPage";
 
 const Stack = createStackNavigator();
 
 const AppNav = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="main">
+      <Stack.Navigator initialRouteName="launch">
         <Stack.Group
           screenOptions={{
             headerShown: false,
           }}
         >
           <Stack.Screen name="main" component={Main} />
+          <Stack.Screen name="launch" component={LaunchView} />
         </Stack.Group>
 
-        <Stack.Group
+        {/* <Stack.Group
           screenOptions={{
             headerShown: true,
           }}
@@ -31,7 +33,7 @@ const AppNav = () => {
               title: "操作硬件钱包",
             }}
           />
-        </Stack.Group>
+        </Stack.Group> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
